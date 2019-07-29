@@ -1,0 +1,142 @@
+{% extends "myApp/base.html" %} {% block content %}
+<center>
+    <br>
+    <br>
+    <br>
+<div class="row">
+  <div class="col-lg-2">
+      <input type="button" name="" value="Add Product" data-toggle="modal" data-target="#myModal">
+  </div>
+  <div class="col-lg-2">
+      <a href="{%url 'intro:delete_all_product'%}"><input type="button" name="" value="Delete All Product"></a>
+  </div>
+  <div class="col-lg-2">
+      <a href="{%url 'intro:main'%}"><input type="button" name="" value="RESET"></a>
+  </div>
+  <div class="col-lg-4">
+      <form action="{%url 'intro:upload_file' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="productfile">
+        <button type="submit">Upload</button>
+      </form>
+  </div>
+    <div class="col-lg-2">
+        <a href="{%url 'intro:logout' %}"><input type="button" name="" value="Logout"></a>
+    </div>
+</div>
+
+<!-- Product Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Enter Invetory Info</h4>
+                        </div>
+                        <form action="{%url 'intro:add_product' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                {{ form }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+<br>
+<br>
+<br>
+    <form action="{%url 'intro:product_search' %}" method="POST">
+      {% csrf_token %}
+      <input id="search_text" type="text" name="search" placeholder="Enter SKU of Product to Search" style="width:500px; text-align:center;" />
+      <input class="btn btn-lng btn-danger" id="" type="Submit" value="Search" style="margin-right: 20px;"/>
+    </form>
+<br>
+
+{% if srch %}
+<table class="table table-hover" style="text-align:center;">
+  <thead>
+    <tr>
+        <td>Name</td>
+        <td>SKU</td>
+        <td>Description</td>
+        <td>Status</td>
+        <td>Edit</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product_id,d in srch %}
+      <tr>
+        <td>{{ d.name }}</td>
+        <td>{{ d.sku }}</td>
+        <td>{{ d.description }}</td>
+          {% if d.status == 'Active' %}
+            <td class="btn btn-primary">{{ d.status }}</td>
+          {% else %}
+            <td class="btn btn-warning">{{ d.status }}</td>
+          {% endif %}
+        <td>
+            <a href="{% url 'intro:edit_product' id=product_id %}">
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                </button>
+            </a>
+            <a href="{% url 'intro:delete_single_product' id=product_id %}">
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<br>
+{% if not srch %}
+<table class="table table-hover" style="text-align:center;">
+  <thead>
+    <tr>
+        <td>Name</td>
+        <td>SKU</td>
+        <td>Description</td>
+        <td>Status</td>
+        <td>Edit</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product_id,d in data %}
+      <tr>
+        <td>{{ d.name }}</td>
+        <td>{{ d.sku }}</td>
+        <td>{{ d.description }}</td>
+        {% if d.status == 'Active' %}
+            <td class="btn btn-primary">{{ d.status }}</td>
+          {% else %}
+            <td class="btn btn-warning">{{ d.status }}</td>
+          {% endif %}
+          <td>
+            <a href="{% url 'intro:edit_product' id=product_id %}">
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                </button>
+            </a>
+              <a href="{% url 'intro:delete_single_product' id=product_id %}">
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+</center>
+{% endblock content %}
