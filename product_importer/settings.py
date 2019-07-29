@@ -129,3 +129,5 @@ CELERY_BROKER_URL = 'amqp://localhost'
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = reverse_lazy('intro:main')
+
+DISABLE_COLLECTSTATIC=1
